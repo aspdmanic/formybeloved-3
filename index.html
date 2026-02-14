@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blood-red: #8b0000;
+            --deep-purple: #2d1b3d;
+            --gothic-black: #0a0a0a;
+            --rose-red: #c41e3a;
+            --parchment: #f4e8d8;
+            --gold: #b8860b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--gothic-black) 0%, var(--deep-purple) 50%, var(--gothic-black) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Gothic background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 0, 0, 0.03) 2px, rgba(139, 0, 0, 0.03) 4px);
+            pointer-events: none;
+        }
+
+        /* Gothic vines decoration */
+        .vine-left, .vine-right {
+            position: fixed;
+            width: 150px;
+            height: 100%;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 1;
+            background-repeat: repeat-y;
+            background-size: 100% auto;
+        }
+
+        .vine-left {
+            left: 0;
+            top: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200'%3E%3Cpath d='M20,0 Q10,50 20,100 Q30,150 20,200 M20,30 Q35,35 40,45 M20,70 Q5,75 10,85 M20,130 Q35,135 40,145 M20,170 Q5,175 10,185' stroke='%238b0000' stroke-width='2' fill='none'/%3E%3Ccircle cx='40' cy='45' r='8' fill='%238b0000'/%3E%3Ccircle cx='10' cy='85' r='6' fill='%238b0000'/%3E%3Ccircle cx='40' cy='145' r='7' fill='%238b0000'/%3E%3Ccircle cx='10' cy='185' r='6' fill='%238b0000'/%3E%3C/svg%3E");
+        }
+
+        .vine-right {
+            right: 0;
+            top: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200'%3E%3Cpath d='M80,0 Q90,50 80,100 Q70,150 80,200 M80,30 Q65,35 60,45 M80,70 Q95,75 90,85 M80,130 Q65,135 60,145 M80,170 Q95,175 90,185' stroke='%238b0000' stroke-width='2' fill='none'/%3E%3Ccircle cx='60' cy='45' r='8' fill='%238b0000'/%3E%3Ccircle cx='90' cy='85' r='6' fill='%238b0000'/%3E%3Ccircle cx='60' cy='145' r='7' fill='%238b0000'/%3E%3Ccircle cx='90' cy='185' r='6' fill='%238b0000'/%3E%3C/svg%3E");
+        }
+
+        /* Floating rose petals */
+        .petal {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--blood-red);
+            border-radius: 50% 0;
+            opacity: 0.7;
+            animation: fall linear infinite;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Envelope container */
+        .envelope-wrapper {
+            position: relative;
+            z-index: 10;
+            animation: fade-in 1.5s ease-out;
+        }
+
+        .envelope-container {
+            width: 400px;
+            height: 280px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-container:hover:not(.opened) {
+            transform: scale(1.05);
+        }
+
+        .envelope-container.opened {
+            cursor: default;
+        }
+
+        /* Envelope parts */
+        .envelope-back {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--blood-red) 0%, var(--rose-red) 100%);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(139, 0, 0, 0.5);
+        }
+
+        .envelope-container.opened .envelope-back,
+        .envelope-container.opened .envelope-front,
+        .envelope-container.opened .envelope-top {
+            pointer-events: none;
+        }
+
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 200px solid var(--rose-red);
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+            z-index: 3;
+            filter: brightness(0.95);
+        }
+
+        .envelope-top {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-top: 80px solid var(--blood-red);
+            z-index: 4;
+            transform-origin: bottom center;
+            transition: transform 0.8s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .envelope-container.opened .envelope-top {
+            transform: rotateX(180deg);
+        }
+
+        /* Wax seal on envelope */
+        .wax-seal {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--gold) 0%, #8b6914 100%);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            transition: opacity 0.5s ease;
+            border: 2px solid rgba(139, 0, 0, 0.3);
+        }
+
+        .envelope-container.opened .wax-seal {
+            opacity: 0;
+        }
+
+        /* Decorative border on envelope */
+        .envelope-border {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            height: 180px;
+            border: 2px solid rgba(139, 0, 0, 0.3);
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        /* Message text on envelope */
+        .envelope-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--parchment);
+            text-align: center;
+            z-index: 5;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .envelope-container.opened .envelope-message {
+            opacity: 0;
+        }
+
+        /* Letter inside */
+        .letter {
+            position: absolute;
+            width: 360px;
+            height: 500px;
+            background: var(--parchment);
+            border-radius: 5px;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 1s ease;
+            padding: 40px;
+            background-image: 
+                linear-gradient(rgba(139, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 100% 30px;
+        }
+
+        .envelope-container.opened .letter {
+            transform: translateX(-50%) translateY(-180px);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Rose decorations on letter */
+        .rose-decoration {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+
+        .rose-top-left { top: 10px; left: 10px; }
+        .rose-top-right { top: 10px; right: 10px; }
+        .rose-bottom-left { bottom: 10px; left: 10px; }
+        .rose-bottom-right { bottom: 10px; right: 10px; }
+
+        /* Letter content */
+        .letter-content {
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .question {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gothic-black);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .question .name {
+            color: var(--blood-red);
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            padding: 15px 35px;
+            border: 2px solid var(--blood-red);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-yes {
+            background: var(--blood-red);
+            color: var(--parchment);
+            transform: scale(1);
+        }
+
+        .btn-yes:hover {
+            background: var(--rose-red);
+            transform: scale(1.1);
+        }
+
+        .btn-no {
+            background: var(--parchment);
+            color: var(--blood-red);
+        }
+
+        .btn-no:hover {
+            background: #e8dcc8;
+        }
+
+        /* Response message */
+        .response {
+            display: none;
+            text-align: center;
+        }
+
+        .response.show {
+            display: block;
+            animation: fade-in-scale 0.8s ease-out;
+        }
+
+        .response h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--blood-red);
+            margin-bottom: 30px;
+        }
+
+        .response p {
+            font-size: 1.3rem;
+            color: var(--gothic-black);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .heart-arrow-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            background: var(--blood-red);
+            color: var(--parchment);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .heart-arrow-btn:hover {
+            background: var(--rose-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fade-in-scale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .envelope-container {
+                width: 300px;
+                height: 210px;
+            }
+
+            .envelope-back {
+                height: 150px;
+            }
+
+            .envelope-front {
+                border-left: 150px solid transparent;
+                border-right: 150px solid transparent;
+                border-bottom: 150px solid var(--rose-red);
+            }
+
+            .envelope-top {
+                border-left: 150px solid transparent;
+                border-right: 150px solid transparent;
+                border-top: 60px solid var(--blood-red);
+            }
+
+            .letter {
+                width: 280px;
+                height: 420px;
+                padding: 30px;
+            }
+
+            .question {
+                font-size: 1.4rem;
+            }
+
+            .btn {
+                font-size: 1rem;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Gothic vines -->
+    <div class="vine-left"></div>
+    <div class="vine-right"></div>
+
+    <!-- Floating rose petals -->
+    <div id="petals"></div>
+
+    <div class="envelope-wrapper">
+        <div class="envelope-container" id="envelope">
+            <div class="envelope-back">
+                <div class="envelope-border"></div>
+            </div>
+            <div class="envelope-front"></div>
+            <div class="envelope-top"></div>
+            <div class="wax-seal">❤️</div>
+            <div class="envelope-message">
+                You have a<br>special message
+            </div>
+            
+            <div class="letter">
+                <div class="rose-decoration rose-top-left">🌹</div>
+                <div class="rose-decoration rose-top-right">🌹</div>
+                <div class="rose-decoration rose-bottom-left">🌹</div>
+                <div class="rose-decoration rose-bottom-right">🌹</div>
+                
+                <div class="letter-content">
+                    <div class="question-section">
+                        <p class="question">
+                            Will you,<br>
+                            <span class="name">Jay</span>,<br>
+                            be my Valentine?
+                        </p>
+                        <div class="button-container">
+                            <button class="btn btn-yes" id="yesBtn">Yes</button>
+                            <button class="btn btn-no" id="noBtn">No</button>
+                        </div>
+                    </div>
+                    
+                    <div class="response" id="response">
+                        <h2>Perfect!</h2>
+                        <p>I love you so much<br>my forevermore. ❤️</p>
+                        <a href="love-letter.html" class="heart-arrow-btn">
+                            <span>💘</span>
+                            <span>Continue</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube iframes (hidden) -->
+    <div style="display: none;">
+        <div id="player1"></div>
+        <div id="player2"></div>
+    </div>
+
+    <!-- Load YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        let player1, player2;
+        let playersReady = false;
+
+        // YouTube API ready callback
+        function onYouTubeIframeAPIReady() {
+            player1 = new YT.Player('player1', {
+                height: '0',
+                width: '0',
+                videoId: 'xRDzx6n-2Fw', // Bury Me Deep Inside Your Heart
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'modestbranding': 1,
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': function() {
+                        playersReady = true;
+                    }
+                }
+            });
+
+            player2 = new YT.Player('player2', {
+                height: '0',
+                width: '0',
+                videoId: 'GaLaMd_EAo4', // Demolition Lovers
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'modestbranding': 1,
+                    'playsinline': 1
+                }
+            });
+        }
+
+        // Create falling rose petals
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + '%';
+            petal.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            petal.style.animationDelay = Math.random() * 5 + 's';
+            document.getElementById('petals').appendChild(petal);
+            
+            setTimeout(() => petal.remove(), 10000);
+        }
+
+        // Create more initial petals
+        for (let i = 0; i < 40; i++) {
+            setTimeout(createPetal, i * 300);
+        }
+        // Create new petals more frequently
+        setInterval(createPetal, 600);
+
+        // Envelope opening
+        const envelope = document.getElementById('envelope');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const response = document.getElementById('response');
+        const questionSection = document.querySelector('.question-section');
+
+        let noClickCount = 0;
+        let envelopeOpened = false;
+
+        envelope.addEventListener('click', function() {
+            if (!envelopeOpened) {
+                envelope.classList.add('opened');
+                envelopeOpened = true;
+                
+                // Play first song
+                setTimeout(() => {
+                    if (playersReady && player1 && player1.playVideo) {
+                        player1.playVideo();
+                    }
+                }, 1000);
+            }
+        });
+
+        // No button behavior - makes Yes button bigger
+        noBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            noClickCount++;
+            
+            const newScale = 1 + (noClickCount * 0.15);
+            yesBtn.style.transform = `scale(${newScale})`;
+            
+            // Add some fun movement to the no button
+            const maxMove = 50;
+            const randomX = (Math.random() - 0.5) * maxMove;
+            const randomY = (Math.random() - 0.5) * maxMove;
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            
+            // After 5 clicks, disable no button
+            if (noClickCount >= 5) {
+                noBtn.style.opacity = '0.3';
+                noBtn.style.pointerEvents = 'none';
+            }
+        });
+
+        // Yes button behavior
+        yesBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Hide question, show response
+            questionSection.style.display = 'none';
+            response.classList.add('show');
+            
+            // Switch to second song
+            if (player1 && player1.pauseVideo) {
+                player1.pauseVideo();
+            }
+            setTimeout(() => {
+                if (player2 && player2.playVideo) {
+                    player2.playVideo();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

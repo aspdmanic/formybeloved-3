@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You, My Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blood-red: #8b0000;
+            --deep-purple: #2d1b3d;
+            --gothic-black: #0a0a0a;
+            --rose-red: #c41e3a;
+            --parchment: #f4e8d8;
+            --gold: #b8860b;
+            --dark-gray: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--gothic-black) 0%, var(--deep-purple) 50%, var(--gothic-black) 100%);
+            min-height: 100vh;
+            color: var(--parchment);
+            padding: 60px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Gothic background texture */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 0, 0, 0.03) 2px, rgba(139, 0, 0, 0.03) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main quote section */
+        .quote-section {
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid var(--blood-red);
+            border-radius: 10px;
+            padding: 60px 50px;
+            margin-bottom: 80px;
+            box-shadow: 
+                0 0 40px rgba(139, 0, 0, 0.3),
+                inset 0 0 60px rgba(139, 0, 0, 0.1);
+            animation: fade-in 1.5s ease-out;
+            position: relative;
+        }
+
+        .quote-section::before,
+        .quote-section::after {
+            content: '🥀';
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.5;
+        }
+
+        .quote-section::before {
+            top: 20px;
+            left: 20px;
+        }
+
+        .quote-section::after {
+            bottom: 20px;
+            right: 20px;
+            transform: rotate(180deg);
+        }
+
+        .quote {
+            font-size: 1.5rem;
+            line-height: 2.2;
+            text-align: center;
+            color: var(--parchment);
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .quote-highlight {
+            color: var(--rose-red);
+            font-weight: 600;
+        }
+
+        /* Song boxes grid */
+        .songs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .song-box {
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid var(--blood-red);
+            border-radius: 10px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fade-in-up 1s ease-out backwards;
+        }
+
+        .song-box:nth-child(1) { animation-delay: 0.2s; }
+        .song-box:nth-child(2) { animation-delay: 0.3s; }
+        .song-box:nth-child(3) { animation-delay: 0.4s; }
+        .song-box:nth-child(4) { animation-delay: 0.5s; }
+        .song-box:nth-child(5) { animation-delay: 0.6s; }
+        .song-box:nth-child(6) { animation-delay: 0.7s; }
+
+        .song-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .song-box:hover::before {
+            left: 100%;
+        }
+
+        .song-box:hover {
+            transform: translateY(-10px);
+            border-color: var(--rose-red);
+            box-shadow: 
+                0 20px 50px rgba(139, 0, 0, 0.6),
+                0 0 30px rgba(139, 0, 0, 0.4);
+        }
+
+        .song-icon {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .song-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--rose-red);
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .song-artist {
+            font-size: 1rem;
+            color: var(--parchment);
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .song-lyrics {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--parchment);
+            text-align: center;
+            font-style: italic;
+            opacity: 0.9;
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid var(--blood-red);
+        }
+
+        /* Audio controls hidden */
+        audio {
+            display: none;
+        }
+
+        /* Playing indicator */
+        .song-box.playing {
+            border-color: var(--gold);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 20px 50px rgba(139, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.6);
+            }
+            50% {
+                box-shadow: 0 20px 50px rgba(139, 0, 0, 0.8), 0 0 50px rgba(212, 175, 55, 0.8);
+            }
+        }
+
+        .playing-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            display: none;
+        }
+
+        .song-box.playing .playing-indicator {
+            display: block;
+        }
+
+        .playing-indicator span {
+            display: inline-block;
+            width: 3px;
+            height: 100%;
+            background: var(--gold);
+            margin: 0 2px;
+            animation: sound-wave 0.8s infinite ease-in-out;
+        }
+
+        .playing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .playing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .playing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes sound-wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Animations */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quote-section {
+                padding: 40px 30px;
+            }
+
+            .quote {
+                font-size: 1.2rem;
+                line-height: 2;
+            }
+
+            .songs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Footer note */
+        .footer-note {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 1.1rem;
+            color: var(--rose-red);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quote-section">
+            <p class="quote">
+                I know life has been heavy lately, and our days have not been easy. 
+                Through every shadow and every storm, <span class="quote-highlight">my heart belongs to you</span>. 
+                I want you to be my Valentine this year and every year to follow. 
+                This Valentine's Day, I promise to make you feel as <span class="quote-highlight">unforgettable as you make me</span>, 
+                to fill you with all the love I carry, and to show you that 
+                <span class="quote-highlight">this day can be something darkly beautiful and ours alone</span>.
+            </p>
+        </div>
+
+        <div class="songs-grid">
+            <!-- Song 1: Bury Me Deep Inside Your Heart -->
+            <div class="song-box" data-song="song1" data-youtube="xRDzx6n-2Fw">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">🖤</span>
+                <h3 class="song-title">Bury Me Deep Inside Your Heart</h3>
+                <p class="song-artist">HIM</p>
+                <p class="song-lyrics">
+                    "Bury me deep inside your heart where I can never escape you."
+                </p>
+            </div>
+
+            <!-- Song 2: Demolition Lovers -->
+            <div class="song-box" data-song="song2" data-youtube="GaLaMd_EAo4">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">💔</span>
+                <h3 class="song-title">Demolition Lovers</h3>
+                <p class="song-artist">My Chemical Romance</p>
+                <p class="song-lyrics">
+                    "We will be each other's ruins until the end of time."
+                </p>
+            </div>
+
+            <!-- Song 3: Lonely Day -->
+            <div class="song-box" data-song="song3" data-youtube="DnGdoEa1tPg">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">🌑</span>
+                <h3 class="song-title">Lonely Day</h3>
+                <p class="song-artist">System of a Down</p>
+                <p class="song-lyrics">
+                    "It's my most lonely day, my eyes are dry but my soul aches."
+                </p>
+            </div>
+
+            <!-- Song 4: Love Song -->
+            <div class="song-box" data-song="song4" data-youtube="22oU0P6tzJk">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">🥀</span>
+                <h3 class="song-title">Lovesong</h3>
+                <p class="song-artist">The Cure</p>
+                <p class="song-lyrics">
+                    "I will give you all my love and never let it fade."
+                </p>
+            </div>
+
+            <!-- Song 5: Sacrifice -->
+            <div class="song-box" data-song="song5" data-youtube="egLAkA4HrXU">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">⚰️</span>
+                <h3 class="song-title">Sacrifice</h3>
+                <p class="song-artist">London After Midnight</p>
+                <p class="song-lyrics">
+                    "I live only to worship you, my sacrifice, my everything."
+                </p>
+            </div>
+
+            <!-- Song 6: Be Quiet and Drive (Far Away) -->
+            <div class="song-box" data-song="song6" data-youtube="KvknOXGPzCQ">
+                <div class="playing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="song-icon">🌙</span>
+                <h3 class="song-title">Be Quiet and Drive (Far Away)</h3>
+                <p class="song-artist">Deftones</p>
+                <p class="song-lyrics">
+                    "Drive far away, leave the world behind, just you and me."
+                </p>
+            </div>
+        </div>
+
+        <p class="footer-note">
+            Hover over each to hear our song 🎵
+        </p>
+    </div>
+
+    <!-- YouTube iframes (hidden) -->
+    <div style="display: none;">
+        <div id="player1"></div>
+        <div id="player2"></div>
+        <div id="player3"></div>
+        <div id="player4"></div>
+        <div id="player5"></div>
+        <div id="player6"></div>
+    </div>
+
+    <!-- Load YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        let players = {};
+        let currentlyPlaying = null;
+
+        // YouTube API ready callback
+        function onYouTubeIframeAPIReady() {
+            const songData = {
+                'song1': 'xRDzx6n-2Fw',
+                'song2': 'GaLaMd_EAo4',
+                'song3': 'DnGdoEa1tPg',
+                'song4': '22oU0P6tzJk',
+                'song5': 'egLAkA4HrXU',
+                'song6': 'KvknOXGPzCQ'
+            };
+
+            // Create YouTube players for each song
+            Object.keys(songData).forEach((songId, index) => {
+                players[songId] = new YT.Player(`player${index + 1}`, {
+                    height: '0',
+                    width: '0',
+                    videoId: songData[songId],
+                    playerVars: {
+                        'autoplay': 0,
+                        'controls': 0,
+                        'disablekb': 1,
+                        'fs': 0,
+                        'modestbranding': 1,
+                        'playsinline': 1
+                    },
+                    events: {
+                        'onReady': onPlayerReady
+                    }
+                });
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        const songBoxes = document.querySelectorAll('.song-box');
+
+        songBoxes.forEach(box => {
+            const songId = box.getAttribute('data-song');
+
+            box.addEventListener('mouseenter', function() {
+                // Stop currently playing song
+                if (currentlyPlaying && currentlyPlaying !== songId) {
+                    if (players[currentlyPlaying] && players[currentlyPlaying].pauseVideo) {
+                        players[currentlyPlaying].pauseVideo();
+                        players[currentlyPlaying].seekTo(0);
+                    }
+                    // Remove playing class from all boxes
+                    songBoxes.forEach(b => b.classList.remove('playing'));
+                }
+
+                // Play this song
+                if (players[songId] && players[songId].playVideo) {
+                    players[songId].playVideo();
+                    box.classList.add('playing');
+                    currentlyPlaying = songId;
+                }
+            });
+
+            box.addEventListener('mouseleave', function() {
+                // Stop the song
+                if (players[songId] && players[songId].pauseVideo) {
+                    players[songId].pauseVideo();
+                    players[songId].seekTo(0);
+                }
+                box.classList.remove('playing');
+                if (currentlyPlaying === songId) {
+                    currentlyPlaying = null;
+                }
+            });
+        });
+
+        // Stop all audio when page unloads
+        window.addEventListener('beforeunload', function() {
+            Object.keys(players).forEach(songId => {
+                if (players[songId] && players[songId].pauseVideo) {
+                    players[songId].pauseVideo();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
